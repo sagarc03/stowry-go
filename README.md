@@ -74,6 +74,30 @@ func main() {
 }
 ```
 
+### Low-Level Signing
+
+```go
+// Generate a signature directly
+signature := stowry.Sign(
+    "your-secret-key",
+    "GET",
+    "/bucket/object.pdf",
+    1736956800,  // Unix timestamp
+    900,         // Expires in seconds
+)
+```
+
+## Constants
+
+```go
+stowry.DefaultExpires          // 900 (15 minutes)
+stowry.MaxExpires              // 604800 (7 days)
+stowry.StowryCredentialParam   // "X-Stowry-Credential"
+stowry.StowryDateParam         // "X-Stowry-Date"
+stowry.StowryExpiresParam      // "X-Stowry-Expires"
+stowry.StowrySignatureParam    // "X-Stowry-Signature"
+```
+
 ## Errors
 
 ```go
