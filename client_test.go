@@ -13,9 +13,9 @@ func TestSign(t *testing.T) {
 	expires := int64(900)
 	expected := "b24285352583edb3d06c531f61e38c5706d42d79e31474bf1f95667d524bae21"
 
-	got := sign(secretKey, method, path, timestamp, expires)
+	got := Sign(secretKey, method, path, timestamp, expires)
 	if got != expected {
-		t.Errorf("sign() = %q, want %q", got, expected)
+		t.Errorf("Sign() = %q, want %q", got, expected)
 	}
 }
 

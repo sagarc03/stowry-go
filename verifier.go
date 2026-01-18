@@ -41,10 +41,10 @@ func NewVerifier(lookup func(accessKey string) (secretKey string, found bool)) *
 //   - [ErrExpired]: Signature validity period has elapsed
 //   - [ErrInvalidSignature]: Signature does not match expected value
 func (v *Verifier) Verify(method, path string, query url.Values) error {
-	credential := query.Get(paramCredential)
-	dateStr := query.Get(paramDate)
-	expiresStr := query.Get(paramExpires)
-	signature := query.Get(paramSignature)
+	credential := query.Get(StowryCredentialHeader)
+	dateStr := query.Get(StowryDateHeader)
+	expiresStr := query.Get(StowryExpiresHeader)
+	signature := query.Get(StowrySignatureHeader)
 
 	if credential == "" || dateStr == "" || expiresStr == "" || signature == "" {
 		return ErrMissingParams
@@ -70,7 +70,7 @@ func (v *Verifier) Verify(method, path string, query url.Values) error {
 		return ErrExpired
 	}
 
-	expected := sign(secretKey, method, path, timestamp, expires)
+	expected := Sign(secretKey, method, path, timestamp, expires)
 	if subtle.ConstantTimeCompare([]byte(expected), []byte(signature)) != 1 {
 		return ErrInvalidSignature
 	}
