@@ -13,14 +13,24 @@ const (
 	// MaxExpires is the maximum validity period in seconds (7 days).
 	MaxExpires = 604800
 
-	paramCredential = "X-Stowry-Credential" //nolint:gosec // query parameter name, not a credential
-	paramDate       = "X-Stowry-Date"
-	paramExpires    = "X-Stowry-Expires"
-	paramSignature  = "X-Stowry-Signature"
+	// StowryCredentialParam is the query parameter name for the access key ID.
+	StowryCredentialParam = "X-Stowry-Credential" //nolint:gosec // query parameter name, not a credential
+	// StowryDateParam is the query parameter name for the Unix timestamp.
+	StowryDateParam = "X-Stowry-Date"
+	// StowryExpiresParam is the query parameter name for the validity period in seconds.
+	StowryExpiresParam = "X-Stowry-Expires"
+	// StowrySignatureParam is the query parameter name for the HMAC-SHA256 signature.
+	StowrySignatureParam = "X-Stowry-Signature"
 )
 
-// sign generates an HMAC-SHA256 signature for the given parameters.
-func sign(secretKey, method, path string, timestamp, expires int64) string {
+// Sign generates an HMAC-SHA256 signature for the given parameters.
+//
+// The signature is computed over a string in the format:
+//
+//	{METHOD}\n{PATH}\n{TIMESTAMP}\n{EXPIRES}
+//
+// Returns the hex-encoded HMAC-SHA256 signature.
+func Sign(secretKey, method, path string, timestamp, expires int64) string {
 	stringToSign := fmt.Sprintf("%s\n%s\n%d\n%d", method, path, timestamp, expires)
 	h := hmac.New(sha256.New, []byte(secretKey))
 	h.Write([]byte(stringToSign))

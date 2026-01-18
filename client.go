@@ -36,24 +36,24 @@ func NewClient(endpoint, accessKey, secretKey string) *Client {
 // default to [DefaultExpires] (900 seconds). Values exceeding [MaxExpires]
 // (604800 seconds) are capped.
 func (c *Client) PresignGet(path string, expires int) string {
-	return c.presign("GET", path, expires)
+	return c.preSign("GET", path, expires)
 }
 
 // PresignPut generates a presigned URL for uploading an object.
 //
 // See [Client.PresignGet] for parameter details.
 func (c *Client) PresignPut(path string, expires int) string {
-	return c.presign("PUT", path, expires)
+	return c.preSign("PUT", path, expires)
 }
 
 // PresignDelete generates a presigned URL for deleting an object.
 //
 // See [Client.PresignGet] for parameter details.
 func (c *Client) PresignDelete(path string, expires int) string {
-	return c.presign("DELETE", path, expires)
+	return c.preSign("DELETE", path, expires)
 }
 
-func (c *Client) presign(method, path string, expires int) string {
+func (c *Client) preSign(method, path string, expires int) string {
 	if !strings.HasPrefix(path, "/") {
 		path = "/" + path
 	}
@@ -66,14 +66,14 @@ func (c *Client) presign(method, path string, expires int) string {
 	}
 
 	timestamp := time.Now().Unix()
-	signature := sign(c.secretKey, method, path, timestamp, int64(expires))
+	signature := Sign(c.secretKey, method, path, timestamp, int64(expires))
 
 	// Query params sorted alphabetically
 	return fmt.Sprintf("%s%s?%s=%s&%s=%d&%s=%d&%s=%s",
 		c.endpoint, path,
-		paramCredential, c.accessKey,
-		paramDate, timestamp,
-		paramExpires, expires,
-		paramSignature, signature,
+		StowryCredentialParam, c.accessKey,
+		StowryDateParam, timestamp,
+		StowryExpiresParam, expires,
+		StowrySignatureParam, signature,
 	)
 }
