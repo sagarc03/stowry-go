@@ -71,9 +71,9 @@ func (c *Client) preSign(method, path string, expires int) string {
 	// Query params sorted alphabetically
 	return fmt.Sprintf("%s%s?%s=%s&%s=%d&%s=%d&%s=%s",
 		c.endpoint, path,
-		StowryCredentialHeader, c.accessKey,
-		StowryDateHeader, timestamp,
-		StowryExpiresHeader, expires,
-		StowrySignatureHeader, signature,
+		StowryCredentialParam, c.accessKey,
+		StowryDateParam, timestamp,
+		StowryExpiresParam, expires,
+		StowrySignatureParam, signature,
 	)
 }

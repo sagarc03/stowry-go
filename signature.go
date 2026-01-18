@@ -13,14 +13,14 @@ const (
 	// MaxExpires is the maximum validity period in seconds (7 days).
 	MaxExpires = 604800
 
-	// StowryCredentialHeader is the query parameter name for the access key ID.
-	StowryCredentialHeader = "X-Stowry-Credential" //nolint:gosec // query parameter name, not a credential
-	// StowryDateHeader is the query parameter name for the Unix timestamp.
-	StowryDateHeader = "X-Stowry-Date"
-	// StowryExpiresHeader is the query parameter name for the validity period in seconds.
-	StowryExpiresHeader = "X-Stowry-Expires"
-	// StowrySignatureHeader is the query parameter name for the HMAC-SHA256 signature.
-	StowrySignatureHeader = "X-Stowry-Signature"
+	// StowryCredentialParam is the query parameter name for the access key ID.
+	StowryCredentialParam = "X-Stowry-Credential" //nolint:gosec // query parameter name, not a credential
+	// StowryDateParam is the query parameter name for the Unix timestamp.
+	StowryDateParam = "X-Stowry-Date"
+	// StowryExpiresParam is the query parameter name for the validity period in seconds.
+	StowryExpiresParam = "X-Stowry-Expires"
+	// StowrySignatureParam is the query parameter name for the HMAC-SHA256 signature.
+	StowrySignatureParam = "X-Stowry-Signature"
 )
 
 // Sign generates an HMAC-SHA256 signature for the given parameters.

@@ -25,10 +25,10 @@ func TestVerifierValid(t *testing.T) {
 	sig := Sign("testsecret", "GET", "/test/file.txt", timestamp, expires)
 
 	query := url.Values{}
-	query.Set(StowryCredentialHeader, "testkey")
-	query.Set(StowryDateHeader, strconv.FormatInt(timestamp, 10))
-	query.Set(StowryExpiresHeader, strconv.FormatInt(expires, 10))
-	query.Set(StowrySignatureHeader, sig)
+	query.Set(StowryCredentialParam, "testkey")
+	query.Set(StowryDateParam, strconv.FormatInt(timestamp, 10))
+	query.Set(StowryExpiresParam, strconv.FormatInt(expires, 10))
+	query.Set(StowrySignatureParam, sig)
 
 	err := v.Verify("GET", "/test/file.txt", query)
 	if err != nil {
@@ -44,16 +44,16 @@ func TestVerifierMissingParams(t *testing.T) {
 		query url.Values
 	}{
 		{"missing credential", url.Values{
-			StowryDateHeader: {"123"}, StowryExpiresHeader: {"900"}, StowrySignatureHeader: {"abc"},
+			StowryDateParam: {"123"}, StowryExpiresParam: {"900"}, StowrySignatureParam: {"abc"},
 		}},
 		{"missing date", url.Values{
-			StowryCredentialHeader: {"key"}, StowryExpiresHeader: {"900"}, StowrySignatureHeader: {"abc"},
+			StowryCredentialParam: {"key"}, StowryExpiresParam: {"900"}, StowrySignatureParam: {"abc"},
 		}},
 		{"missing expires", url.Values{
-			StowryCredentialHeader: {"key"}, StowryDateHeader: {"123"}, StowrySignatureHeader: {"abc"},
+			StowryCredentialParam: {"key"}, StowryDateParam: {"123"}, StowrySignatureParam: {"abc"},
 		}},
 		{"missing signature", url.Values{
-			StowryCredentialHeader: {"key"}, StowryDateHeader: {"123"}, StowryExpiresHeader: {"900"},
+			StowryCredentialParam: {"key"}, StowryDateParam: {"123"}, StowryExpiresParam: {"900"},
 		}},
 		{"empty query", url.Values{}},
 	}
@@ -72,10 +72,10 @@ func TestVerifierInvalidCredential(t *testing.T) {
 	v := NewVerifier(testLookup)
 
 	query := url.Values{}
-	query.Set(StowryCredentialHeader, "unknownkey")
-	query.Set(StowryDateHeader, "1736956800")
-	query.Set(StowryExpiresHeader, "900")
-	query.Set(StowrySignatureHeader, "somesig")
+	query.Set(StowryCredentialParam, "unknownkey")
+	query.Set(StowryDateParam, "1736956800")
+	query.Set(StowryExpiresParam, "900")
+	query.Set(StowrySignatureParam, "somesig")
 
 	err := v.Verify("GET", "/test", query)
 	if !errors.Is(err, ErrInvalidCredential) {
@@ -91,10 +91,10 @@ func TestVerifierExpired(t *testing.T) {
 	sig := Sign("testsecret", "GET", "/test", oldTimestamp, expires)
 
 	query := url.Values{}
-	query.Set(StowryCredentialHeader, "testkey")
-	query.Set(StowryDateHeader, strconv.FormatInt(oldTimestamp, 10))
-	query.Set(StowryExpiresHeader, strconv.FormatInt(expires, 10))
-	query.Set(StowrySignatureHeader, sig)
+	query.Set(StowryCredentialParam, "testkey")
+	query.Set(StowryDateParam, strconv.FormatInt(oldTimestamp, 10))
+	query.Set(StowryExpiresParam, strconv.FormatInt(expires, 10))
+	query.Set(StowrySignatureParam, sig)
 
 	err := v.Verify("GET", "/test", query)
 	if !errors.Is(err, ErrExpired) {
@@ -109,10 +109,10 @@ func TestVerifierInvalidSignature(t *testing.T) {
 	expires := int64(900)
 
 	query := url.Values{}
-	query.Set(StowryCredentialHeader, "testkey")
-	query.Set(StowryDateHeader, strconv.FormatInt(timestamp, 10))
-	query.Set(StowryExpiresHeader, strconv.FormatInt(expires, 10))
-	query.Set(StowrySignatureHeader, "invalidsignature")
+	query.Set(StowryCredentialParam, "testkey")
+	query.Set(StowryDateParam, strconv.FormatInt(timestamp, 10))
+	query.Set(StowryExpiresParam, strconv.FormatInt(expires, 10))
+	query.Set(StowrySignatureParam, "invalidsignature")
 
 	err := v.Verify("GET", "/test", query)
 	if !errors.Is(err, ErrInvalidSignature) {
@@ -124,10 +124,10 @@ func TestVerifierTestVector(t *testing.T) {
 	v := NewVerifier(testLookup)
 
 	query := url.Values{}
-	query.Set(StowryCredentialHeader, "FE373CEF5632FDED3081")
-	query.Set(StowryDateHeader, "1736956800")
-	query.Set(StowryExpiresHeader, "900")
-	query.Set(StowrySignatureHeader, "b24285352583edb3d06c531f61e38c5706d42d79e31474bf1f95667d524bae21")
+	query.Set(StowryCredentialParam, "FE373CEF5632FDED3081")
+	query.Set(StowryDateParam, "1736956800")
+	query.Set(StowryExpiresParam, "900")
+	query.Set(StowrySignatureParam, "b24285352583edb3d06c531f61e38c5706d42d79e31474bf1f95667d524bae21")
 
 	err := v.Verify("GET", "/test/hello.txt", query)
 	if !errors.Is(err, ErrExpired) {
@@ -139,10 +139,10 @@ func TestVerifierInvalidDateFormat(t *testing.T) {
 	v := NewVerifier(testLookup)
 
 	query := url.Values{}
-	query.Set(StowryCredentialHeader, "testkey")
-	query.Set(StowryDateHeader, "not-a-number")
-	query.Set(StowryExpiresHeader, "900")
-	query.Set(StowrySignatureHeader, "somesig")
+	query.Set(StowryCredentialParam, "testkey")
+	query.Set(StowryDateParam, "not-a-number")
+	query.Set(StowryExpiresParam, "900")
+	query.Set(StowrySignatureParam, "somesig")
 
 	err := v.Verify("GET", "/test", query)
 	if !errors.Is(err, ErrMissingParams) {
@@ -154,10 +154,10 @@ func TestVerifierInvalidExpiresFormat(t *testing.T) {
 	v := NewVerifier(testLookup)
 
 	query := url.Values{}
-	query.Set(StowryCredentialHeader, "testkey")
-	query.Set(StowryDateHeader, "1736956800")
-	query.Set(StowryExpiresHeader, "not-a-number")
-	query.Set(StowrySignatureHeader, "somesig")
+	query.Set(StowryCredentialParam, "testkey")
+	query.Set(StowryDateParam, "1736956800")
+	query.Set(StowryExpiresParam, "not-a-number")
+	query.Set(StowrySignatureParam, "somesig")
 
 	err := v.Verify("GET", "/test", query)
 	if !errors.Is(err, ErrMissingParams) {

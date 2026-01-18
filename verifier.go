@@ -41,10 +41,10 @@ func NewVerifier(lookup func(accessKey string) (secretKey string, found bool)) *
 //   - [ErrExpired]: Signature validity period has elapsed
 //   - [ErrInvalidSignature]: Signature does not match expected value
 func (v *Verifier) Verify(method, path string, query url.Values) error {
-	credential := query.Get(StowryCredentialHeader)
-	dateStr := query.Get(StowryDateHeader)
-	expiresStr := query.Get(StowryExpiresHeader)
-	signature := query.Get(StowrySignatureHeader)
+	credential := query.Get(StowryCredentialParam)
+	dateStr := query.Get(StowryDateParam)
+	expiresStr := query.Get(StowryExpiresParam)
+	signature := query.Get(StowrySignatureParam)
 
 	if credential == "" || dateStr == "" || expiresStr == "" || signature == "" {
 		return ErrMissingParams
